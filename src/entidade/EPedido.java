@@ -6,6 +6,7 @@
 package entidade;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -16,16 +17,22 @@ public class EPedido {
     private int codigo;
     private Double valorTotal;
     private Date dataPedido;
+    
+    private EAssociado associado;
+    private List<EItemPedido> listaItem;
 
     public EPedido() {
     }
 
-    public EPedido(int codigo, Double valorTotal, Date dataPedido) {
+    public EPedido(int codigo, Double valorTotal, Date dataPedido, EAssociado associado,List<EItemPedido> listaItem) {
         this.codigo = codigo;
         this.valorTotal = valorTotal;
         this.dataPedido = dataPedido;
+        this.associado = associado;
+        this.listaItem = listaItem;
     }
     
+
     public int getCodigo() {
         return codigo;
     }
@@ -49,5 +56,23 @@ public class EPedido {
     public void setDataPedido(Date dataPedido) {
         this.dataPedido = dataPedido;
     }
+
+    public EAssociado getAssociado() {
+        return associado;
+    }
+
+    public void setAssociado(EAssociado associado) {
+        this.associado = associado;
+    }
+
+    public List<EItemPedido> getListaItem() {
+        return listaItem;
+    }
+
+    public void setListaItem(List<EItemPedido> listaItem) {
+        this.listaItem = listaItem;
+    }
+    
+    
     
 }

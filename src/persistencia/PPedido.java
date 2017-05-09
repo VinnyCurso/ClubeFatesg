@@ -32,9 +32,9 @@ public class PPedido {
             
             PreparedStatement prepared = conection.prepareStatement(sql);
             
-            prepared.setInt(1,0);
-            prepared.setInt(0, 0);
-            prepared.setInt(0, 0);
+
+            prepared.setDouble(1, pedido.getValorTotal());
+            prepared.setInt(2, pedido.getAssociado().getCodigo());
             
             prepared.execute();
             
@@ -52,7 +52,7 @@ public class PPedido {
             
             PItemPedido pItem = new PItemPedido();
             
-            for (EItemPedido item : pedido.getListaItens()) {
+            for (EItemPedido item : pedido.getListaItem()) {
                pItem.incluir(item,conection);
                 
             }
