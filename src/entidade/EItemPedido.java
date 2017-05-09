@@ -14,14 +14,17 @@ public class EItemPedido {
     private long codigo;
     private Double precoEpoca;
     private int quantidade;
+    
+    private EPedido pedido;
 
     public EItemPedido() {
     }
 
-    public EItemPedido(long codigo, Double precoEpoca, int quantidade) {
+    public EItemPedido(long codigo, Double precoEpoca, int quantidade, EPedido pedido) {
         this.codigo = codigo;
         this.precoEpoca = precoEpoca;
         this.quantidade = quantidade;
+        this.pedido = pedido;
     }
 
     public long getCodigo() {
@@ -46,6 +49,14 @@ public class EItemPedido {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public EPedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(EPedido pedido) {
+        this.pedido = pedido;
     }
    
 }

@@ -6,6 +6,7 @@
 package persistencia;
 
 import entidade.EItemPedido;
+import java.sql.Connection;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class PItemPedido {
     public PItemPedido() {
     }
 
-    public void incluir(EItemPedido itemPedido) {
+    public void incluir(EItemPedido item, Connection conection) {
     }
 
     public void alterar(EItemPedido paramentro) {
@@ -33,5 +34,9 @@ public class PItemPedido {
     public List<EItemPedido> listar(EItemPedido itemPedido) {
         return null;
     }
+
+    void excluirPorPedido(int codigo, Connection conection) {
+    }
+
 
 }
