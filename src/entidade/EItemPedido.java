@@ -16,9 +16,14 @@ public class EItemPedido {
     private int quantidade;
     
     private EPedido pedido;
+    private EProduto produto;
 
     public EItemPedido() {
+        this.produto = produto;
+        this.pedido = pedido;
     }
+    
+ 
 
     public EItemPedido(long codigo, Double precoEpoca, int quantidade, EPedido pedido) {
         this.codigo = codigo;
@@ -58,5 +63,13 @@ public class EItemPedido {
     public void setPedido(EPedido pedido) {
         this.pedido = pedido;
     }
-   
+    
+      public EProduto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(EProduto produto) {
+        this.produto = produto;
+    }
+
 }

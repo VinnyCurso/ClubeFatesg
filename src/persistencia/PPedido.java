@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,103 +26,166 @@ public class PPedido {
 
     public void incluir(EPedido pedido) throws SQLException {
 
-        Connection conection = util.Conexao.getConexao();
-        conection.setAutoCommit(false);
-
+        //criar instruções sql para execultar no banco
+        Connection cnn = util.Conexao.getConexao();
+        cnn.setAutoCommit(false);
         try {
-            String sql = "insert into pedido (datapedido, valortotal, codigo_associado) values (now(),?,?)";
 
-            PreparedStatement prepared = conection.prepareStatement(sql);
+            String sql = "INSERT INTO pedido (valortotal, datapedido, codigo_associado)"
+                    + " VALUES (?, NOW(), ?) ";
 
-            prepared.setDouble(1, pedido.getValorTotal());
-            prepared.setInt(2, pedido.getAssociado().getCodigo());
+            //Cria a conexão com o banco de dado
+            //executa a conexão
+            PreparedStatement ps = cnn.prepareStatement(sql);
 
-            prepared.execute();
+            //seta os valores no objeto ps
+            ps.setDouble(1, pedido.getValorTotal());
+            ps.setInt(2, pedido.getAssociado().getCodigo());
 
-            String sql2 = "select currval ('pedido_codigo_seq') as codigo";
+            //execulta o objeto 
+            ps.execute();
 
-            Statement st = conection.createStatement();
+            //cria instrução sql para recupera o valor da sequencia
+            String sql1 = "SELECT curval('pedido_cod_seq')as codigo";
 
-            ResultSet resul = st.executeQuery(sql2);
+            //cria um objeto para recupera as informações
+            Statement stm = cnn.createStatement();
 
-            if (resul.next()) {
-                pedido.setCodigo(resul.getInt("codigo"));
-
+            //busca sa informações no banco e preenche o objeto
+            ResultSet rs = stm.executeQuery(sql);
+            if (rs.next()) {
+                pedido.setCodigo(rs.getInt("codigo"));
             }
-            resul.close();
-
-            PItemPedido pItem = new PItemPedido();
-
+            //fecha o resultset
+            rs.close();
+            PItemPedido pitem = new PItemPedido();
             for (EItemPedido item : pedido.getListaItem()) {
-                pItem.incluir(item, conection);
-
+                item.getPedido().setCodigo(pedido.getCodigo());
+                pitem.incluir(item, cnn);
             }
-            conection.commit();
+            //fecha a conexão
+            cnn.commit();
         } catch (Exception e) {
-            conection.rollback();
+            cnn.rollback();
         }
+        cnn.close();
     }
 
     public void alterar(EPedido pedido) throws SQLException {
-
-        Connection conection = util.Conexao.getConexao();
-        conection.setAutoCommit(false);
-
+        //cria conexão como o banco
+        Connection cnn = util.Conexao.getConexao();
+        cnn.setAutoCommit(false);
         try {
-            String sql = " update pedido set datapedido = now(),valortotal=? where codigo=?";
+            //cria instrução sql 
+            String sql = "UPADET pedido SET valortotal = ?, datapedido = NOW() "
+                    + " WHERE codigo = ? ";
 
-            PreparedStatement prepared = conection.prepareStatement(sql);
+            //execulta a conexão
+            PreparedStatement ps = cnn.prepareStatement(sql);
 
-            prepared.setDouble(1, pedido.getValorTotal());
-            prepared.setInt(2, pedido.getCodigo());
-            prepared.execute();
+            ps.setDouble(1, pedido.getValorTotal());
+            ps.setInt(2, pedido.getCodigo());
+            //execulta o objeto
+            ps.execute();
 
-            PItemPedido pItem = new PItemPedido();
-            pItem.excluirPorPedido(pedido.getCodigo(), conection);
-
+            PItemPedido pitem = new PItemPedido();
+            pitem.excluirPorPedido(pedido.getCodigo(),cnn);
             for (EItemPedido item : pedido.getListaItem()) {
-
                 item.getPedido().setCodigo(pedido.getCodigo());
-                pItem.incluir(item, conection);
+                pitem.incluir(item, cnn);
             }
-
+            
+            cnn.commit();
         } catch (Exception e) {
-            conection.rollback();
+            cnn.rollback();
         }
+        cnn.close();
 
     }
 
-    public EPedido consultar(int paramentro) {
-        return null;
-    }
-
-    public void excluir(EPedido pedido) throws SQLException {
-
-        Connection conection = util.Conexao.getConexao();
-        conection.setAutoCommit(false);
-
+    public void excluir(int codigo) throws SQLException {
+        Connection cnn = util.Conexao.getConexao();
+        cnn.setAutoCommit(false);
         try {
-            String sql = " update pedido set datapedido = now(),valortotal=? where codigo=?";
+            //cria instrução sql 
+            String sql = "DELETE FROM pedido "
+                    + " WHERE codigo = ? ";
 
-            PreparedStatement prepared = conection.prepareStatement(sql);
+            //execulta a conexão
+            PreparedStatement ps = cnn.prepareStatement(sql);
 
-            prepared.setInt(1, pedido.getCodigo());
-            prepared.execute();
+            ps.setDouble(1, codigo);            
+            //execulta o objeto
+            ps.execute();
 
-            PItemPedido pItem = new PItemPedido();
-            pItem.excluirPorPedido(pedido.getCodigo(), conection);
-
-            for (EItemPedido item : pedido.getListaItem()) {
-
-                item.getPedido().setCodigo(pedido.getCodigo());
-            }
-
+//            PItemPedido pitem = new PItemPedido();
+//            pitem.excluirPorPedido(codigo,cnn);
+            
+            cnn.commit();
         } catch (Exception e) {
-            conection.rollback();
+            cnn.rollback();
         }
+        cnn.close();
+
     }
 
-    public List<EPedido> listar(EPedido pedido) {
-        return null;
+    public EPedido consultar(int codigo) throws SQLException {
+        //cria a conexão com o banco
+        Connection cnn = util.Conexao.getConexao();
+
+        //cria instrução sql para execulta no banco
+        String sql = "SELECT codigo, valortotal, datapedido"
+                + "FROM pedido "
+                + " WHERE codigo = ? ";
+
+        //execulta a conexão
+        PreparedStatement ps = cnn.prepareStatement(sql);
+
+        ps.setInt(1, codigo);
+
+        //busca as informações no banco e preenche o objeto resultset
+        ResultSet rs = ps.executeQuery();
+
+        EPedido pedido = new EPedido();
+        if (rs.next()) {
+            pedido.setCodigo(rs.getInt("codigo"));
+            pedido.setValorTotal(rs.getDouble("valortotal"));
+            pedido.setDataPedido(rs.getDate("datapedido"));
+        }
+        //fecha o resultset
+        rs.close();
+        //fecha a conexão
+        cnn.close();
+        return pedido;
+    }
+
+    public List<EPedido> listar(EPedido pedido) throws SQLException {
+        //cria instruções sql para execultar no banco
+        String sql = "SELECT * FROM pedido"
+                + "WHERE codigo = ? ";
+
+        //cria uma conexão com o banco
+        Connection cnn = util.Conexao.getConexao();
+        //execulta a conexão
+        PreparedStatement ps = cnn.prepareStatement(sql);
+
+        ps.setInt(1, pedido.getCodigo());
+
+        //busca as informações no banco e preenche o objeto resultset
+        ResultSet rs = ps.executeQuery();
+
+        List<EPedido> lista = new ArrayList<>();
+        while (rs.next()) {
+            EPedido pd = new EPedido();
+            pd.setCodigo(rs.getInt("codigo"));
+            pd.setValorTotal(rs.getDouble("valortotal"));
+            pd.setDataPedido(rs.getDate("datapedido"));
+            lista.add(pd);
+        }
+        //fecha resultset
+        rs.close();
+        //fecha conexão
+        cnn.close();
+        return lista;
     }
 }

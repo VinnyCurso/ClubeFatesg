@@ -40,6 +40,7 @@ public class Principal extends javax.swing.JFrame {
         mnuCadAssociado = new javax.swing.JMenuItem();
         mnuCadTipoAssociado = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        mnuMoviEstoque = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenu4 = new javax.swing.JMenu();
         mnuSair = new javax.swing.JMenuItem();
@@ -76,11 +77,25 @@ public class Principal extends javax.swing.JFrame {
 
         mnuCadTipoAssociado.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_T, java.awt.event.InputEvent.CTRL_MASK));
         mnuCadTipoAssociado.setText("Tipo Associado");
+        mnuCadTipoAssociado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuCadTipoAssociadoActionPerformed(evt);
+            }
+        });
         jMenu1.add(mnuCadTipoAssociado);
 
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Movimentações");
+
+        mnuMoviEstoque.setText("Estoque");
+        mnuMoviEstoque.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuMoviEstoqueActionPerformed(evt);
+            }
+        });
+        jMenu2.add(mnuMoviEstoque);
+
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText("Relatórios");
@@ -138,6 +153,22 @@ public class Principal extends javax.swing.JFrame {
         fecharAplicacao();
     }//GEN-LAST:event_formWindowClosing
 
+    private void mnuCadTipoAssociadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuCadTipoAssociadoActionPerformed
+        // TODO add your handling code here:
+        
+        
+        TipoAssociado_Cadastro tac = new TipoAssociado_Cadastro();
+        tac.setVisible(true);
+ 
+    }//GEN-LAST:event_mnuCadTipoAssociadoActionPerformed
+
+    private void mnuMoviEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuMoviEstoqueActionPerformed
+        // TODO add your handling code here:
+        
+        Estoque_Movimentacao em = new Estoque_Movimentacao();
+        em.setVisible(true);
+    }//GEN-LAST:event_mnuMoviEstoqueActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -181,6 +212,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem mnuCadAssociado;
     private javax.swing.JMenuItem mnuCadTipoAssociado;
+    private javax.swing.JMenuItem mnuMoviEstoque;
     private javax.swing.JMenuItem mnuSair;
     private javax.swing.JDesktopPane pnlPrincipal;
     // End of variables declaration//GEN-END:variables

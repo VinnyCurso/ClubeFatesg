@@ -101,6 +101,8 @@ public class Associado_Cadastro extends javax.swing.JInternalFrame {
 
         jLabel3.setText("Endereço");
 
+        cmbTipoAssociado.setSelectedItem(cmbTipoAssociado);
+
         jLabel4.setText("Tipo Associado");
 
         btnSalvar.setText("Salvar");

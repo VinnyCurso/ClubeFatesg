@@ -26,137 +26,130 @@ public class PProduto {
 
     public void incluir(EProduto produto) throws SQLException {
 
-        String sql = "insert into produto (nome, precoVenda) values(?,?)";
-
+       //Instruções sql para execução no banco
+        String sql = "INSERT INTO produto (nome, valorvenda)"
+                + " VALUES (?, ?)";
+        
+        //Comando para conexão com o banco de dados
         Connection cnn = util.Conexao.getConexao();
-
-        PreparedStatement prepared = cnn.prepareStatement(sql);
-
-        prepared.setString(1, produto.getNome());
-        prepared.setDouble(2, produto.getPrecoVenda());
-
-        prepared.execute();
-
-        String sql2 = "SELECT currval('produto_codigo_seq') as codigo";
-
-        Statement st = cnn.createStatement();
-
-        ResultSet result = st.executeQuery(sql2);
-
-        if (result.next()) {
-            produto.setCodigo(result.getInt("codigo"));
-
+        //executa a conexão
+        PreparedStatement ps = cnn.prepareStatement(sql);
+        
+        //seta os valores recebidos como parametros
+        ps.setString(1, produto.getNome());
+        ps.setDouble(2, produto.getPrecoVenda());
+        
+        //executa o objeto 
+        ps.execute();
+        
+        //Recupera a valor da sequencia
+        String sql1 = "SELECT curval ('produto_codigo_seq')as codigo";
+        //cria um objeto para recuperar as informações
+        Statement stm = cnn.createStatement();
+        
+        //busca as informações no banco de dado
+        //e preenche o objeto rst
+        ResultSet rst = stm.executeQuery(sql);
+        //verifica se existe algo no objeto resultSet
+        if (rst.next()) {
+            produto.setCodigo(rst.getInt("codigo"));
         }
-
-        result.close();
+        //fecha o resultSet
+        rst.close();
+        //fecha a conexão
         cnn.close();
     }
-
-    public void alterar(EProduto parametro) throws SQLException {
-
-        Connection conection = util.Conexao.getConexao();
-
-        String sql = "uptade produto set nome=? precoVenda=? where codigo=?";
-
-        PreparedStatement prepared = conection.prepareStatement(sql);
-
-        prepared.setString(1, parametro.getNome());
-        prepared.setDouble(2, parametro.getPrecoVenda());
-
-        prepared.execute();
-        conection.close();
-
+    
+    public void alterar(EProduto produto) throws SQLException{
+        String sql = "UPDATE produto SET nome = ?, valorvenda = ?"
+                + " WHERE codigo = ? ";
+        
+        Connection cnn = util.Conexao.getConexao();
+        PreparedStatement ps = cnn.prepareStatement(sql);
+        
+        ps.setString(1, produto.getNome());
+        ps.setDouble(2, produto.getPrecoVenda());
+        ps.setInt(3, (int) produto.getCodigo());
+        
+        ps.executeUpdate();
+        cnn.close();
     }
-
-    public void excluir(int parametro) throws SQLException {
-
-        Connection conection = util.Conexao.getConexao();
-
-        String sql = "delete from produto where codigo=?";
-
-        PreparedStatement prepared = conection.prepareStatement(sql);
-
-        prepared.setInt(1, parametro);
-
-        prepared.execute();
-        conection.close();
+    
+    public void excluir(int codigo) throws SQLException{
+        //cria instruções sql para executar contro o banco
+        String sql = "DELETE FROM produto"
+                + " WHERE codigo = ?";
+        
+        //cria conexão com o banco 
+        Connection cnn = util.Conexao.getConexao();
+        
+        //execulta a conexão
+        PreparedStatement ps = cnn.prepareStatement(sql);
+        
+        //seta os valores recebidos como parametro
+        ps.setInt(1, codigo);
+        //execulta o objeto ps
+        ps.execute();
+        //fecha a conexão
+        cnn.close();
+        
     }
-
-    public EProduto consultar(int paramentro) throws SQLException {
-
-        Connection conection = util.Conexao.getConexao();
-
-        String sql = "select codigo,nome,precoVenda from codigo=?";
-
-        PreparedStatement prepared = conection.prepareStatement(sql);
-        prepared.setInt(1, paramentro);
-
-        ResultSet resul = prepared.executeQuery();
-
-        EProduto retorno = new EProduto();
-
-        if (resul.next()) {
-            retorno.setCodigo(resul.getInt("codigo"));
-            retorno.setNome(resul.getString("nome"));
-            retorno.setPrecoVenda(resul.getDouble("precoVenda"));
-
+    
+    public EProduto consultar(int codigo) throws SQLException{
+        //cria inestruções sql para execultar no banco
+        String sql = "SELECT codigo, nome, valorvenda"
+                + "FROM produto"
+                + " WHERE codigo = ?";
+        
+        //cria uma conexão com o banco de dado
+        Connection cnn = util.Conexao.getConexao();
+        //execulta a conexão
+        PreparedStatement ps = cnn.prepareStatement(sql);
+        //seta os valores no objeto ps 
+        ps.setInt(1, codigo);
+        
+        //busca as informações no banco e preenche o objeto
+        ResultSet rs = ps.executeQuery();
+        
+        EProduto pedido = new EProduto();
+        if (rs.next()) {
+            pedido.setCodigo(rs.getInt("codigo"));
+            pedido.setNome(rs.getString("nome"));
+            pedido.setPrecoVenda(rs.getDouble("valorvenda"));
         }
-        resul.close();
-        conection.close();
-
-        return retorno;
+        //fecha o resultSet
+        rs.close();
+        //fecha conexão com o banco
+        cnn.close();
+        return pedido;
     }
-
-    public List<EProduto> listar(EProduto produto) throws SQLException {
-
+    
+    public List<EProduto> listar(EProduto produto) throws SQLException{
+        //cria instruções sql para execultar contra o banco
+        String sql = "SELECT * FROM produto"
+                + " WHERE nome LIKE ? ";
+        
+        //cria uma conexão com o banco
+        Connection cnn = util.Conexao.getConexao();
+        //execulta a conexão
+        PreparedStatement ps = cnn.prepareStatement(sql);
+        //seta as informações no objeto
+        ps.setString(1, "%" +produto.getNome()+ "%");
+        
+        //busca sa informações no banco e preenche o objeto
+        ResultSet rs = ps.executeQuery();
+        
+        //cria uma lista de produto
         List<EProduto> lista = new ArrayList<>();
-
-        Connection conection = util.Conexao.getConexao();
-
-        String sql = "select * from produto where 1=1";
-
-        if (produto.getNome() != null) {
-            if (!produto.getNome().isEmpty()) {
-                sql += "and nome like ?";
-            }
+        while(rs.next()){
+            EProduto p = new EProduto();
+            p.setCodigo(rs.getInt("codigo"));
+            p.setNome(rs.getString("nome"));
+            p.setPrecoVenda(rs.getDouble("valorvenda"));
+            lista.add(p);
         }
-
-        if (produto.getPrecoVenda() != null) {
-            if (!produto.getPrecoVenda().isInfinite()) {
-                sql += " and precoVenda like ? ";
-            }
-        }
-
-        sql = " order by nome";
-
-        PreparedStatement prepared = conection.prepareStatement(sql);
-
-        if (produto.getNome() != null) {
-            if (!produto.getNome().isEmpty()) {
-                prepared.setString(1, "%" + produto.getNome() + "%");
-            }
-        }
-
-        if (produto.getPrecoVenda() != null) {
-            if (!produto.getPrecoVenda().isInfinite()) {
-//                prepared.setDouble(2, "%" + produto.getPrecoVenda() + "%");
-            }
-
-        }
-
-        ResultSet resul = prepared.executeQuery();
-
-        while (resul.next()) {
-            EProduto retorno = new EProduto();
-            retorno.setCodigo(resul.getInt("codigo"));
-            retorno.setNome(resul.getString("nome"));
-            retorno.setPrecoVenda(resul.getDouble("precoVenda"));
-        }
-
-        resul.close();
-        conection.close();
-
+        rs.close();
+        cnn.close();
         return lista;
     }
-
 }

@@ -6,7 +6,6 @@
 package persistencia;
 
 import entidade.EAssociado;
-import entidade.ETipoAssociado;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

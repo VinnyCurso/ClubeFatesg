@@ -9,12 +9,12 @@ package apresentacao;
  *
  * @author vinicius caetano
  */
-public class Estoque_Movivemtacao extends javax.swing.JInternalFrame {
+public class Estoque_Movimentacao extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form Estoque_Movivemtacao
      */
-    public Estoque_Movivemtacao() {
+    public Estoque_Movimentacao() {
         initComponents();
     }
 
@@ -54,6 +54,12 @@ public class Estoque_Movivemtacao extends javax.swing.JInternalFrame {
         jLabel3.setText("Quantidade :");
 
         jLabel4.setText("Data Movimentação :");
+
+        try {
+            txtFormatedDataMovi.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
 
         jLabel5.setText("Estoque Origem :");
 

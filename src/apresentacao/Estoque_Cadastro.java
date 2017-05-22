@@ -44,6 +44,9 @@ public class Estoque_Cadastro extends javax.swing.JInternalFrame {
         jLabel3.setText("Sede :");
 
         ComboSede.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione...", "Goiânia", "Anapolis", " " }));
+        ComboSede.setSelectedItem(ComboSede);
+
+        txtCodigo.setEnabled(false);
 
         btnRegistar.setText("Registar");
 
